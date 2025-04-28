@@ -1,0 +1,16 @@
+/* CSS */
+.color-1 {
+  color: #a3d7e6;
+}
+.color-2 {
+  color: #4ba4b4;
+}
+.color-3 {
+  color: #1e7b7b;
+}
+.color-4 {
+  color: #205b5b;
+}
+.color-5 {
+  color: #103c3c;
+}
