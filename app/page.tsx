@@ -1,16 +1,20 @@
-import Hero from "@/components/hero";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-
+import Header from "@/components/layout/header";
+import PropertyListings from "../components/listings/property-listing";
+import VehicleListings from "../components/listings/vehicle-listing";
+import MostPopularCategories from "@/components/most-popular-categories";
+import RecentListings from "@/components/listings/recent-listing";
+import MiddleBanner from "@/components/banners/middle-banner";
 export default async function Home() {
   return (
-    <>
-      <Hero />
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <h2 className="font-medium text-xl mb-4">Next steps</h2>
-        {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-      </main>
-    </>
+    <div className="max-w-5xl mx-auto px-3">
+      <Header />
+      <MostPopularCategories />
+      <PropertyListings />
+      <MiddleBanner />
+      <VehicleListings />
+      <MiddleBanner />
+      <RecentListings />
+      <MiddleBanner />
+    </div>
   );
 }
