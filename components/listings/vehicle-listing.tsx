@@ -1,5 +1,4 @@
 import React from "react";
-import { getVehicleListings } from "@/services/listing-services";
 import { ListingCard } from "./listing-card";
 import Link from "next/link";
 import {
@@ -9,13 +8,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { getRecentListingsByCategory } from "@/services/server/listing";
+import { CATEGORIES } from "@/utils/constants";
 
 export default async function VehicleListings() {
-  const listings = await getVehicleListings();
+  const listings = await getRecentListingsByCategory(CATEGORIES.VEHICLE);
 
   return (
     <section className="mt-10 mb-5">
-      <h2 className="text-2xl font-semibold mb-5 flex items-center">
+      <h2 className="text-xl font-semibold mb-5 flex items-center">
         Vehículos
         <Link
           href="/vehiculos"

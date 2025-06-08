@@ -1,5 +1,4 @@
 import React from "react";
-import { getPropertyListings } from "@/services/listing-services";
 import { ListingCard } from "./listing-card";
 import Link from "next/link";
 import {
@@ -9,13 +8,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { getRecentListingsByCategory } from "@/services/server/listing";
+import { CATEGORIES } from "@/utils/constants";
 
 export default async function PropertyListings() {
-  const listings = await getPropertyListings();
+  const listings = await getRecentListingsByCategory(CATEGORIES.PROPERTY);
 
   return (
     <section className="mb-5">
-      <h2 className="text-2xl font-semibold mb-5 flex items-center">
+      <h2 className="text-xl font-semibold mb-5 flex items-center">
         Inmuebles
         <Link
           href="/inmuebles"
@@ -39,10 +40,7 @@ export default async function PropertyListings() {
       >
         <CarouselContent>
           {listings.map((listing) => (
-            <CarouselItem
-              key={listing.id}
-              className="basis-1/5"
-            >
+            <CarouselItem key={listing.id} className="basis-1/5">
               <ListingCard listing={listing} />
             </CarouselItem>
           ))}

@@ -1,14 +1,14 @@
 import React from "react";
-import { getRecentListings } from "@/services/listing-services";
 import { ListingCard } from "./listing-card";
 import Link from "next/link";
+import { getRecentListings } from "@/services/server/listing";
 
 export default async function RecentListings() {
   const listings = await getRecentListings();
-
+  console.log(listings);
   return (
     <section className="mt-10 mb-5">
-      <h2 className="text-2xl font-semibold mb-5 flex items-center">
+      <h2 className="text-xl font-semibold mb-5 flex items-center">
         Últimas publicaciones
         <Link
           href="/categorias"
@@ -23,7 +23,6 @@ export default async function RecentListings() {
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
-
     </section>
   );
 }

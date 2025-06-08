@@ -23,20 +23,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQueries } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { errorToast, successToast } from "@/lib/toast";
-import { getProductCategories } from "@/services/client";
 import { uploadListingImages } from "@/utils/upload-images";
 import ImageUpload from "@/components/ui/image-upload";
-import { PRODUCT_STATES } from "@/utils/constants";
+import { CATEGORIES } from "@/utils/constants";
 import useLocation from "../hooks/useLocation";
 
 const formSchema = z.object({
-  product_title: z.string({
-    required_error: "Campo requerido",
-  }),
-  category_id: z.string({
+  job_title: z.string({
     required_error: "Campo requerido",
   }),
   price: z.coerce.number().positive({
@@ -44,42 +39,26 @@ const formSchema = z.object({
   }),
   state_id: z.string().optional(),
   city_id: z.string().optional(),
-  product_state: z.string({
-    required_error: "Campo requerido",
-  }),
   description: z.string().optional(),
+  remote: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function CreateListingProductForm() {
+export default function CreateListingJobForm() {
   const router = useRouter();
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setSelectedState, states, cities } = useLocation();
 
-  const [categoriesQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ["categories", 1],
-        queryFn: () => getProductCategories(),
-        staleTime: 5 * 60 * 1000,
-      },
-    ],
-  });
-
-  const categories = categoriesQuery.data;
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product_title: "",
-      category_id: "",
+      job_title: "",
       price: 0,
-      product_state: "",
-      state_id: "",
       city_id: "",
+      state_id: "",
       description: "",
     },
   });
@@ -113,14 +92,14 @@ export default function CreateListingProductForm() {
       const { data: listingData, error: listingError } = await supabase
         .from("listings")
         .insert({
-          category_id: data.category_id,
+          category_id: CATEGORIES.JOB,
           price: data.price,
-          city_id: data.city_id,
-          state_id: data.state_id,
+          city_id: data.remote ? null : data.city_id,
+          state_id: data.remote ? null : data.state_id,
           description: data.description || null,
           user_id: user?.id,
           currency: "USD",
-          text_search: `${data.product_title} ${data.description} ${data.product_state}`,
+          text_search: `${data.job_title} ${data.description}`,
         })
         .select()
         .single();
@@ -130,25 +109,22 @@ export default function CreateListingProductForm() {
         .insert([
           {
             listing_id: listingData.id,
-            value: data.product_title,
-            name: "product_title",
+            value: data.job_title,
+            name: "job_title",
           },
           {
             listing_id: listingData.id,
-            value: data.product_state,
-            name: "product_state",
+            value: data.remote ? "Remoto" : "Presencial",
+            name: "remote",
           },
         ])
         .select();
 
-      if (listingError || listingAttributesError) {
+      if (listingError || listingAttributesError)
         throw listingError || listingAttributesError;
-      }
 
       await uploadListingImages(images, listingData.id, supabase);
-
       successToast("Anuncio creado");
-
       router.push(`/a/${listingData.id}`);
     } catch (error) {
       console.error("Error al crear el anuncio:", error);
@@ -158,6 +134,31 @@ export default function CreateListingProductForm() {
     }
   }
 
+  const handleRemoteChange = (value: boolean) => {
+    form.setValue("remote", value);
+    if (value) {
+      form.setValue("state_id", "");
+      form.setValue("city_id", "");
+      form.setError("state_id", {
+        message: "El estado es requerido",
+      });
+      form.setError("city_id", {
+        message: "La ciudad es requerida",
+      });
+    }
+  };
+
+  const handleStateChange = (value: string) => {
+    form.setValue("state_id", value);
+    form.clearErrors("city_id");
+    form.clearErrors("state_id");
+    setSelectedState(Number(value));
+  };
+
+  const handleCityChange = (value: string) => {
+    form.setValue("city_id", value);
+  };
+
   return (
     <Form {...form}>
       <form
@@ -166,40 +167,12 @@ export default function CreateListingProductForm() {
       >
         <FormField
           control={form.control}
-          name="category_id"
+          name="job_title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Categoría</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una categoría" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories?.map((category) => (
-                    <SelectItem
-                      key={category.id}
-                      value={category.id.toString()}
-                    >
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="product_title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre del producto</FormLabel>
+              <FormLabel>Nombre del trabajo</FormLabel>
               <FormControl>
-                <Input placeholder="Ej: Notebook" {...field} />
+                <Input placeholder="Ej: Desarrollador Web" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -211,7 +184,7 @@ export default function CreateListingProductForm() {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Precio</FormLabel>
+              <FormLabel>Sueldo</FormLabel>
               <FormControl>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -233,86 +206,86 @@ export default function CreateListingProductForm() {
 
         <FormField
           control={form.control}
-          name="product_state"
+          name="remote"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado del producto</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un estado" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {PRODUCT_STATES?.map((state) => (
-                    <SelectItem key={state.id} value={state.id.toString()}>
-                      {state.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
+            <FormItem className="flex flex-row items-center space-x-2 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <input
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={() => handleRemoteChange(!field.value)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Trabajo Remoto
+                </FormLabel>
+              </div>
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="state_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado</FormLabel>
-              <Select
-                onValueChange={(e) => {
-                  field.onChange(e);
-                  console.log(e);
-                  setSelectedState(Number(e));
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un estado" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {states?.map((state) => (
-                    <SelectItem key={state.id} value={state.id.toString()}>
-                      {state.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="city_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ciudad</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una ciudad" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {cities?.map((city) => (
-                    <SelectItem key={city.id} value={city.id.toString()}>
-                      {city.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        {!form.watch("remote") && (
+          <FormField
+            control={form.control}
+            name="state_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estado</FormLabel>
+                <Select
+                  onValueChange={(e) => handleStateChange(e)}
+                  defaultValue={field.value}
+                  disabled={form.watch("remote")}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un estado" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {states?.map((state) => (
+                      <SelectItem key={state.id} value={state.id.toString()}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        {!form.watch("remote") && (
+          <FormField
+            control={form.control}
+            name="city_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ciudad</FormLabel>
+                <Select
+                  onValueChange={(e) => handleCityChange(e)}
+                  defaultValue={field.value}
+                  disabled={form.watch("remote")}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona una ciudad" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {cities?.map((city) => (
+                      <SelectItem key={city.id} value={city.id.toString()}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="description"
@@ -336,6 +309,7 @@ export default function CreateListingProductForm() {
           imageUrls={imageUrls}
           onImageChange={handleImageChange}
           onRemoveImage={removeImage}
+          title="Imágenes del trabajo"
         />
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>

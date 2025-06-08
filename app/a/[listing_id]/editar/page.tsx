@@ -1,8 +1,8 @@
-import ListingDetails from "@/components/listings/listing-details";
+import EditListingForm from "@/components/forms/edit-listing-form";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function ListingPage() {
+export default async function EditListingPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -12,5 +12,5 @@ export default async function ListingPage() {
     return redirect("/sign-in");
   }
 
-  return <ListingDetails user_id={user.id} />;
+  return <EditListingForm user_id={user.id} />;
 }

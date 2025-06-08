@@ -18,17 +18,17 @@ export default async function NewListingPage() {
   return (
     <div className="relative">
       <div className="w-full flex flex-col items-center justify-center z-10 relative top-16">
-        <h2 className="text-2xl font-bold mb-10">
+        <h2 className="text-xl font-semibold mb-10">
           ¡Hola! Para empezar, ¿que tipo de publicación quieres hacer?
         </h2>
         <div className="max-w-5xl w-full grid grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
           <Link href={`/publicar/inmueble`}>
             <Card className="cursor-pointer hover:shadow-md transition-all duration-300 w-[180px] md:w-[200px]">
               <CardContent className="flex flex-col items-center justify-center p-6">
-                <div className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+                <div className="w-[50px] h-[50px] md:w-[80px] md:h-[80px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                   <IconHomeFilled className="w-full h-full" />
                 </div>
-                <CardTitle className="text-center text-xl font-bold">
+                <CardTitle className="text-center text-xl font-semibold">
                   Inmueble
                 </CardTitle>
               </CardContent>
@@ -37,10 +37,10 @@ export default async function NewListingPage() {
           <Link href={`/publicar/vehiculo`}>
           <Card className="cursor-pointer hover:shadow-md transition-all duration-300 w-[180px] md:w-[200px]">
               <CardContent className="flex flex-col items-center justify-center p-6">
-                <div className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+                <div className="w-[50px] h-[50px] md:w-[80px] md:h-[80px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                   <IconCarFilled className="w-full h-full" />
                 </div>
-                <CardTitle className="text-center text-xl font-bold">
+                <CardTitle className="text-center text-xl font-semibold">
                   Vehículo
                 </CardTitle>
               </CardContent>
@@ -49,10 +49,10 @@ export default async function NewListingPage() {
           <Link href={`/publicar/empleo`}>
             <Card className="cursor-pointer hover:shadow-md transition-all duration-300 w-[180px] md:w-[200px]">
               <CardContent className="flex flex-col items-center justify-center p-6">
-                <div className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+                <div className="w-[50px] h-[50px] md:w-[80px] md:h-[80px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                   <IconBriefcaseFilled className="w-full h-full" />
                 </div>
-                <CardTitle className="text-center text-xl font-bold">
+                <CardTitle className="text-center text-xl font-semibold">
                   Empleo
                 </CardTitle>
               </CardContent>
@@ -61,10 +61,10 @@ export default async function NewListingPage() {
           <Link href={`/publicar/producto-servicio`}>
             <Card className="cursor-pointer hover:shadow-md transition-all duration-300 w-[180px] md:w-[200px]">
               <CardContent className="flex flex-col items-center justify-center p-6">
-                <div className="w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+                <div className="w-[50px] h-[50px] md:w-[80px] md:h-[80px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                   <IconShoppingCartFilled className="w-full h-full" />
                 </div>
-                <CardTitle className="text-center text-xl font-bold">
+                <CardTitle className="text-center text-xl font-semibold">
                   Producto
                 </CardTitle>
               </CardContent>

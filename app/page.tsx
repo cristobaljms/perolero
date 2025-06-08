@@ -4,6 +4,7 @@ import VehicleListings from "../components/listings/vehicle-listing";
 import MostPopularCategories from "@/components/most-popular-categories";
 import RecentListings from "@/components/listings/recent-listing";
 import MiddleBanner from "@/components/banners/middle-banner";
+
 export default async function Home() {
   return (
     <div className="max-w-5xl mx-auto px-3">
@@ -11,7 +12,7 @@ export default async function Home() {
       <MostPopularCategories />
       <PropertyListings />
       <MiddleBanner />
-      <VehicleListings />
+      <VehicleListings /> 
       <MiddleBanner />
       <RecentListings />
       <MiddleBanner />

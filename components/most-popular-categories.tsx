@@ -11,7 +11,7 @@ import {
 export default async function MostPopularCategories() {
   return (
     <div className="w-full mb-10">
-      <h2 className="text-2xl font-bold mb-5 flex items-center">
+      <h2 className="text-xl font-semibold mb-5 flex items-center">
         Categorías más populares
         <Link
           href="/categorias"
@@ -24,7 +24,7 @@ export default async function MostPopularCategories() {
         <Link href={`/inmuebles`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconHome className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -36,7 +36,7 @@ export default async function MostPopularCategories() {
         <Link href={`/vehiculos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconCar className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -48,7 +48,7 @@ export default async function MostPopularCategories() {
         <Link href={`/empleo`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconBriefcase className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -60,7 +60,7 @@ export default async function MostPopularCategories() {
         <Link href={`/c/hogar`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconToolsKitchen3 className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -72,7 +72,7 @@ export default async function MostPopularCategories() {
         <Link href={`/c/electronica`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconDevices className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">

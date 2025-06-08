@@ -24,7 +24,7 @@ export default async function Categories() {
         <Link href={`/inmuebles`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconHome className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -36,7 +36,7 @@ export default async function Categories() {
         <Link href={`/vehiculos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconCar className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -48,7 +48,7 @@ export default async function Categories() {
         <Link href={`/empleo`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconBriefcase className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -60,7 +60,7 @@ export default async function Categories() {
         <Link href={`/c/hogar`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconToolsKitchen3 className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -73,7 +73,7 @@ export default async function Categories() {
         <Link href={`/c/bebes-y-ninos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconBabyCarriage className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -86,7 +86,7 @@ export default async function Categories() {
         <Link href={`/c/moda-y-belleza`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconHanger className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -99,7 +99,7 @@ export default async function Categories() {
         <Link href={`/c/deportes-y-fitness`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconBarbell className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -112,7 +112,7 @@ export default async function Categories() {
         <Link href={`/c/electronica`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconDevices className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -125,7 +125,7 @@ export default async function Categories() {
         <Link href={`/c/servicios`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconDeviceDesktop className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -138,7 +138,7 @@ export default async function Categories() {
         <Link href={`/c/entretenimiento`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconMovie className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">
@@ -151,7 +151,7 @@ export default async function Categories() {
         <Link href={`/c/repuestos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
-              <div className="w-[50px] h-[50px] md:w-[70px] md:h-[70px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
+              <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
                 <IconTool className="w-full h-full" />
               </div>
               <CardTitle className="text-center text-lg font-bold">

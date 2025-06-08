@@ -14,32 +14,21 @@ export type Database = {
           created_at: string
           id: number
           name: string | null
-          parent_id: number | null
           tag: string | null
         }
         Insert: {
           created_at?: string
           id?: number
           name?: string | null
-          parent_id?: number | null
           tag?: string | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string | null
-          parent_id?: number | null
           tag?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "categories_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       cities: {
         Row: {
@@ -66,6 +55,38 @@ export type Database = {
             columns: ["state_id"]
             isOneToOne: false
             referencedRelation: "states"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listing_attributes: {
+        Row: {
+          created_at: string
+          id: number
+          listing_id: number
+          name: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          listing_id: number
+          name: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          listing_id?: number
+          name?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_attributes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
             referencedColumns: ["id"]
           },
         ]
@@ -141,55 +162,84 @@ export type Database = {
       listings: {
         Row: {
           category_id: number | null
+          city_id: number | null
           created_at: string
+          currency: string | null
           description: string | null
+          expire_at: string | null
+          featured: boolean | null
           id: number
-          location: number | null
           price: number | null
-          product_state: string | null
-          product_title: string | null
-          property_contract_type: string | null
+          search_vector: unknown | null
+          slug: string | null
+          state: string | null
+          state_id: number | null
+          sub_category_id: number | null
+          text_search: string | null
+          update_at: string | null
           user_id: string | null
-          vehicle_brand: string | null
-          vehicle_model: string | null
-          vehicle_year: number | null
+          views: number | null
         }
         Insert: {
           category_id?: number | null
+          city_id?: number | null
           created_at?: string
+          currency?: string | null
           description?: string | null
+          expire_at?: string | null
+          featured?: boolean | null
           id?: number
-          location?: number | null
           price?: number | null
-          product_state?: string | null
-          product_title?: string | null
-          property_contract_type?: string | null
+          search_vector?: unknown | null
+          slug?: string | null
+          state?: string | null
+          state_id?: number | null
+          sub_category_id?: number | null
+          text_search?: string | null
+          update_at?: string | null
           user_id?: string | null
-          vehicle_brand?: string | null
-          vehicle_model?: string | null
-          vehicle_year?: number | null
+          views?: number | null
         }
         Update: {
           category_id?: number | null
+          city_id?: number | null
           created_at?: string
+          currency?: string | null
           description?: string | null
+          expire_at?: string | null
+          featured?: boolean | null
           id?: number
-          location?: number | null
           price?: number | null
-          product_state?: string | null
-          product_title?: string | null
-          property_contract_type?: string | null
+          search_vector?: unknown | null
+          slug?: string | null
+          state?: string | null
+          state_id?: number | null
+          sub_category_id?: number | null
+          text_search?: string | null
+          update_at?: string | null
           user_id?: string | null
-          vehicle_brand?: string | null
-          vehicle_model?: string | null
-          vehicle_year?: number | null
+          views?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "listings_location_fkey"
-            columns: ["location"]
+            columns: ["city_id"]
             isOneToOne: false
             referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_state_id_fkey"
+            columns: ["state_id"]
+            isOneToOne: false
+            referencedRelation: "states"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_sub_category_id_fkey"
+            columns: ["sub_category_id"]
+            isOneToOne: false
+            referencedRelation: "sub_categories"
             referencedColumns: ["id"]
           },
           {
@@ -226,6 +276,38 @@ export type Database = {
         }
         Relationships: []
       }
+      sub_categories: {
+        Row: {
+          category_id: number
+          created_at: string
+          id: number
+          name: string | null
+          tag: string | null
+        }
+        Insert: {
+          category_id: number
+          created_at?: string
+          id?: number
+          name?: string | null
+          tag?: string | null
+        }
+        Update: {
+          category_id?: number
+          created_at?: string
+          id?: number
+          name?: string | null
+          tag?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -233,6 +315,8 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
+          phone: string | null
+          phone_verified: boolean | null
         }
         Insert: {
           avatar_url?: string | null
@@ -240,6 +324,8 @@ export type Database = {
           email: string
           full_name?: string | null
           id?: string
+          phone?: string | null
+          phone_verified?: boolean | null
         }
         Update: {
           avatar_url?: string | null
@@ -247,6 +333,8 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
+          phone?: string | null
+          phone_verified?: boolean | null
         }
         Relationships: []
       }
@@ -255,7 +343,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
+      }
     }
     Enums: {
       [_ in never]: never
