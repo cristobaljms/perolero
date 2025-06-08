@@ -6,7 +6,7 @@ import { Listing } from "@/types/listing-types";
 import { getCategory } from "@/utils/utils";
 
 type AnunciosPageProps = {
-  searchParams: { category: string; location: string; q: string };
+  searchParams: Promise<{ category: string, location: string, q: string }>
 };
 
 const parseLocation = (location: string) => {
@@ -42,7 +42,7 @@ const getListingsForParams = async (
 export default async function AnunciosPage({
   searchParams,
 }: AnunciosPageProps) {
-  const { category, location, q: search } = searchParams;
+  const { category, location, q: search } = await searchParams;
 
   const listings = await getListingsForParams(category, location, search);
 
