@@ -151,3 +151,61 @@ export const PRODUCT_STATES = [
   { id: "used", name: "Usado" },
   { id: "refurbished", name: "Reacondicionado" },
 ];
+
+export const CATEGORIES_MAP = [
+  {
+    id: 1,
+    name: "Inmuebles",
+    tag: "inmueble",
+  },
+  {
+    id: 2,
+    name: "Vehículos",
+    tag: "vehiculo",
+  },
+  {
+    id: 3,
+    name: "Empleos",
+    tag: "empleo",
+  },
+  {
+    id: 4,
+    name: "Entretenimiento",
+    tag: "entretetimiento",
+  },
+  {
+    id: 5,
+    name: "Moda y Belleza",
+    tag: "moda-belleza",
+  },
+  {
+    id: 6,
+    name: "Deportes y Fitness",
+    tag: "deportes-fitness",
+  },
+  {
+    id: 7,
+    name: "Hogar",
+    tag: "hogar",
+  },
+  {
+    id: 8,
+    name: "Bebés y Niños",
+    tag: "bebes",
+  },
+  {
+    id: 9,
+    name: "Electrónica",
+    tag: "electronica",
+  },
+  {
+    id: 10,
+    name: "Repuestos",
+    tag: "respuestos",
+  },
+  {
+    id: 11,
+    name: "Servicios",
+    tag: "servicios",
+  },
+];

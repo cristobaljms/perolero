@@ -2,13 +2,45 @@ export default function Footer() {
   return (
     <footer className="bg-white w-full dark:bg-gray-900 py-8 mt-10">
       <div className="max-w-5xl mx-auto px-3">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
           <h3 className="text-lg font-semibold mb-4">Sobre Nosotros</h3>
           <p className="text-sm text-muted-foreground">
-            Somos una plataforma dedicada a conectar compradores y vendedores de
-            vehículos en toda España desde 2010.
+            Somos el portal líder de anuncios clasificados en Venezuela, 
+            conectando compradores y vendedores en todo el país desde 2025. 
+            Tu plataforma de confianza para encontrar lo que buscas.
           </p>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Categorías</h3>
+          <ul className="space-y-2">
+            <li>
+              <a href="/anuncios?category=inmuebles" className="text-sm hover:underline">
+                Inmuebles
+              </a>
+            </li>
+            <li>
+              <a href="/anuncios?category=vehiculos" className="text-sm hover:underline">
+                Vehículos
+              </a>
+            </li>
+            <li>
+              <a href="/anuncios?category=electronica" className="text-sm hover:underline">
+                Electrónica
+              </a>
+            </li>
+            <li>
+              <a href="/anuncios?category=hogar" className="text-sm hover:underline">
+                Hogar
+              </a>
+            </li>
+            <li>
+              <a href="/categorias" className="text-sm hover:underline font-medium">
+                Todas las Categorías
+              </a>
+            </li>
+          </ul>
         </div>
 
         <div>
@@ -20,13 +52,13 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href="/vehiculos" className="text-sm hover:underline">
-                Vehículos
+              <a href="/anuncios" className="text-sm hover:underline">
+                Anuncios
               </a>
             </li>
             <li>
-              <a href="/buscar" className="text-sm hover:underline">
-                Buscar
+              <a href="/publicar" className="text-sm hover:underline">
+                Publicar Anuncio
               </a>
             </li>
             <li>
@@ -38,19 +70,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4">Contacto</h3>
-          <address className="not-italic text-sm text-muted-foreground">
-            <p>Calle Ejemplo 123</p>
-            <p>28001 Madrid, España</p>
-            <p className="mt-2">Email: info@ejemplo.com</p>
-            <p>Teléfono: +34 91 123 45 67</p>
-          </address>
-        </div>
-
-        <div>
           <h3 className="text-lg font-semibold mb-4">Síguenos</h3>
           <div className="flex space-x-4">
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            <a href="https://www.facebook.com/elperolero" className="text-muted-foreground hover:text-foreground">
               <span className="sr-only">Facebook</span>
               <svg
                 className="h-6 w-6"
@@ -65,7 +87,7 @@ export default function Footer() {
                 />
               </svg>
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
+            <a href="https://www.instagram.com/perolero.ve/" target="_blank" className="text-muted-foreground hover:text-foreground">
               <span className="sr-only">Instagram</span>
               <svg
                 className="h-6 w-6"
@@ -80,23 +102,13 @@ export default function Footer() {
                 />
               </svg>
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground">
-              <span className="sr-only">Twitter</span>
-              <svg
-                className="h-6 w-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-              </svg>
-            </a>
           </div>
         </div>
       </div>
 
       <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2023 AutoMercado. Todos los derechos reservados.</p>
+          <p>&copy; 2024 El Perolero - Portal de Anuncios Clasificados. Todos los derechos reservados.</p>
+          <p className="mt-1">Hecho con ❤️ en Puerto Ordaz, Venezuela</p>
         </div>
       </div>
     </footer>

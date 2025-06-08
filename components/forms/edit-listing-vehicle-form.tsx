@@ -26,38 +26,40 @@ import {
 import { useQueries } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
 import { errorToast, successToast } from "@/lib/toast";
-import { getPropertySubCategories } from "@/services/client";
+import { getVehicleSubCategories } from "@/services/client";
 import { CATEGORIES } from "@/utils/constants";
 import { uploadListingImages } from "@/utils/upload-images";
 import ImageUpload from "../ui/image-upload";
 import useLocation from "../hooks/useLocation";
-import { Listing } from "@/types/listing-types";
-
 
 const formSchema = z.object({
-  state_id: z.string({
-    message: "Campo requerido",
-  }),
   category_id: z.string({
     message: "Campo requerido",
   }),
   price: z.coerce.number().positive({
     message: "El precio debe ser un número positivo.",
   }),
-  property_contract_type: z.string({
-    required_error: "Por favor selecciona el tipo de contrato.",
+  vehicle_year: z.string({
+    required_error: "Por favor selecciona el año del vehículo.",
   }),
-  city_id: z.string().optional(),
+  vehicle_brand: z.string({
+    required_error: "Por favor selecciona la marca del vehículo.",
+  }),
+  vehicle_model: z.string({
+    required_error: "Por favor selecciona el modelo del vehículo.",
+  }),
+  state_id: z.string({
+    message: "Campo requerido",
+  }),
+  city_id: z.string({
+    message: "Campo requerido",
+  }),
   description: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-type EditListingPropertyFormProps = {
-  data: Listing;
-}
-
-export default function EditListingPropertyForm({ data }: EditListingPropertyFormProps) {
+export default function CreateListingVehicleForm() {
   const router = useRouter();
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -68,10 +70,10 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
     queries: [
       {
         queryKey: ["categories", 1],
-        queryFn: () => getPropertySubCategories(),
-        staleTime: 5 * 60 * 1000
-      }
-    ]
+        queryFn: () => getVehicleSubCategories(),
+        staleTime: 5 * 60 * 1000,
+      },
+    ],
   });
 
   const categories = categoriesQuery.data;
@@ -79,12 +81,14 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      category_id: data.sub_category?.id.toString(),
-      state_id: data.state_id.id.toString(),
-      city_id: data.city_id.id.toString(),
-      price: data.price || 0,
-      property_contract_type: data.attributes?.find(attribute => attribute.name === "property_contract_type")?.value,
-      description: data.description || "",
+      category_id: "",
+      state_id: "",
+      price: undefined,
+      vehicle_year: "",
+      vehicle_brand: "",
+      vehicle_model: "",
+      city_id: "",
+      description: "",
     },
   });
 
@@ -116,8 +120,8 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
 
       const { data: listingData, error: listingError } = await supabase
         .from("listings")
-        .update({
-          category_id: CATEGORIES.PROPERTY,
+        .insert({
+          category_id: CATEGORIES.VEHICLE,
           sub_category_id: data.category_id,
           price: data.price,
           city_id: data.city_id,
@@ -125,33 +129,36 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
           description: data.description || null,
           user_id: user?.id,
           currency: "USD",
-          text_search: `${data.description} ${data.property_contract_type}`,
+          text_search: `${data.description} ${data.vehicle_year} ${data.vehicle_brand} ${data.vehicle_model}`,
         })
         .select()
         .single();
 
       const { error: listingAttributesError } = await supabase
         .from("listing_attributes")
-        .update({
-          value: data.property_contract_type,
-        })
-        .eq('listing_id', listingData.id)
-        .eq('name', 'property_contract_type')
-        .select()
-        .single();
+        .insert([
+          {
+            listing_id: listingData.id,
+            value: data.vehicle_year,
+            name: "vehicle_year",
+          },
+          {
+            listing_id: listingData.id,
+            value: data.vehicle_brand,
+            name: "vehicle_brand",
+          },
+          {
+            listing_id: listingData.id,
+            value: data.vehicle_model,
+            name: "vehicle_model",
+          },
+        ])
+        .select();
 
-      if (listingError || listingAttributesError) throw listingError || listingAttributesError;
+      if (listingError || listingAttributesError)
+        throw listingError || listingAttributesError;
 
-      // if (imagesToDelete.length > 0) {
-      //   const { error: deleteImagesError } = await supabase
-      //     .from("listing_images")
-      //     .delete()
-      //     .in('id', imagesToDelete);
-          
-      //   if (deleteImagesError) throw deleteImagesError;
-      // }
-      
-      // await uploadListingImages(images, listingData.id, supabase);
+      await uploadListingImages(images, listingData.id, supabase);
 
       successToast("Anuncio creado");
 
@@ -175,7 +182,7 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
           name="category_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de propiedad</FormLabel>
+              <FormLabel>Tipo de vehículo</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -225,21 +232,41 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
 
         <FormField
           control={form.control}
-          name="property_contract_type"
+          name="vehicle_brand"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tipo de contrato</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona un tipo de contrato" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="VENTA">Venta</SelectItem>
-                  <SelectItem value="ALQUILER">Alquiler</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>Marca del vehículo</FormLabel>
+              <FormControl>
+                <Input placeholder="Ej: Toyota" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="vehicle_model"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Modelo del vehículo</FormLabel>
+              <FormControl>
+                <Input placeholder="Ej: Corolla" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="vehicle_year"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Año del vehículo</FormLabel>
+              <FormControl>
+                <Input placeholder="Ej: 2020" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -251,11 +278,14 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
           render={({ field }) => (
             <FormItem>
               <FormLabel>Estado</FormLabel>
-              <Select onValueChange={(e) => {
-                field.onChange(e);
-                console.log(e);
-                setSelectedState(Number(e));
-              }} defaultValue={field.value}>
+              <Select
+                onValueChange={(e) => {
+                  field.onChange(e);
+                  console.log(e);
+                  setSelectedState(Number(e));
+                }}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona un estado" />
@@ -263,10 +293,7 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
                 </FormControl>
                 <SelectContent>
                   {states?.map((state) => (
-                    <SelectItem
-                      key={state.id}
-                      value={state.id.toString()}
-                    >
+                    <SelectItem key={state.id} value={state.id.toString()}>
                       {state.name}
                     </SelectItem>
                   ))}
@@ -291,10 +318,7 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
                 </FormControl>
                 <SelectContent>
                   {cities?.map((city) => (
-                    <SelectItem
-                      key={city.id}
-                      value={city.id.toString()}
-                    >
+                    <SelectItem key={city.id} value={city.id.toString()}>
                       {city.name}
                     </SelectItem>
                   ))}
@@ -328,7 +352,6 @@ export default function EditListingPropertyForm({ data }: EditListingPropertyFor
           imageUrls={imageUrls}
           onImageChange={handleImageChange}
           onRemoveImage={removeImage}
-          title="Imágenes del inmueble"
         />
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>

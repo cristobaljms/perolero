@@ -46,20 +46,12 @@ export default function ListingCategoryList() {
 
         if (category === CATEGORY_TAGS.INMUEBLES) {
           query = query
-            .eq("category_id", 1)
-            .eq("category_id", 12)
-            .eq("category_id", 13)
-            .eq("category_id", 14)
-            .eq("category_id", 15)
-            .eq("category_id", 16)
-            .eq("category_id", 17)
-            .eq("category_id", 18);
+            .eq("category_id", 1);
+   
         } else if (category === CATEGORY_TAGS.VEHICULOS) {
           query = query
             .eq("category_id", 2)
-            .eq("category_id", 19)
-            .eq("category_id", 20)
-            .eq("category_id", 21);
+
         } else {
           query = query.eq("category_id", currentCategory.id);
         }

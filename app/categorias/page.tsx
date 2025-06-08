@@ -21,7 +21,7 @@ export default async function Categories() {
     <div className="w-full">
       <h2 className="text-xl font-bold my-10">Todas las categorías</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        <Link href={`/inmuebles`} className="block w-full h-full">
+        <Link href={`/anuncios?category=inmuebles`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -33,7 +33,7 @@ export default async function Categories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/vehiculos`} className="block w-full h-full">
+        <Link href={`/anuncios?category=vehiculos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -45,7 +45,7 @@ export default async function Categories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/empleo`} className="block w-full h-full">
+        <Link href={`/anuncios?category=empleo`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -57,7 +57,7 @@ export default async function Categories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/c/hogar`} className="block w-full h-full">
+        <Link href={`/anuncios?category=hogar`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -70,7 +70,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/bebes-y-ninos`} className="block w-full h-full">
+        <Link href={`/anuncios?category=bebes-y-ninos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -83,7 +83,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/moda-y-belleza`} className="block w-full h-full">
+        <Link href={`/anuncios?category=moda-y-belleza`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -96,7 +96,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/deportes-y-fitness`} className="block w-full h-full">
+        <Link href={`/anuncios?category=deportes-y-fitness`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -109,7 +109,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/electronica`} className="block w-full h-full">
+        <Link href={`/anuncios?category=electronica`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -122,7 +122,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/servicios`} className="block w-full h-full">
+        <Link href={`/anuncios?category=servicios`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -135,7 +135,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/entretenimiento`} className="block w-full h-full">
+        <Link href={`/anuncios?category=entretenimiento`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -148,7 +148,7 @@ export default async function Categories() {
           </Card>
         </Link>
 
-        <Link href={`/c/repuestos`} className="block w-full h-full">
+        <Link href={`/anuncios?category=repuestos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">

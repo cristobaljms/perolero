@@ -88,7 +88,9 @@ export default function SearchAutocomplete() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setShowSuggestions(false)
-    router.push(`/buscar?q=${encodeURIComponent(query)}`)
+    const params = new URLSearchParams(window.location.search);
+    params.set("q", query);
+    router.push(`/anuncios?${params.toString()}`);
   }
 
   return (

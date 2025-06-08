@@ -21,7 +21,7 @@ export default async function MostPopularCategories() {
         </Link>
       </h2>
       <div className="max-w-5xl w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        <Link href={`/inmuebles`} className="block w-full h-full">
+        <Link href={`/anuncios?category=inmuebles`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -33,7 +33,7 @@ export default async function MostPopularCategories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/vehiculos`} className="block w-full h-full">
+        <Link href={`/anuncios?category=vehiculos`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -45,7 +45,7 @@ export default async function MostPopularCategories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/empleo`} className="block w-full h-full">
+        <Link href={`/anuncios?category=empleo`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -57,7 +57,7 @@ export default async function MostPopularCategories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/c/hogar`} className="block w-full h-full">
+        <Link href={`/anuncios?category=hogar`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">
@@ -69,7 +69,7 @@ export default async function MostPopularCategories() {
             </CardContent>
           </Card>
         </Link>
-        <Link href={`/c/electronica`} className="block w-full h-full">
+        <Link href={`/anuncios?category=electronica`} className="block w-full h-full">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-all hover:shadow-md border-0 rounded-lg">
             <CardContent className="flex flex-col items-center justify-center p-6">
               <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] flex items-center justify-center mb-4 hover:scale-105 transition-all duration-300">

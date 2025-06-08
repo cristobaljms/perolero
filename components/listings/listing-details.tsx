@@ -230,6 +230,37 @@ export default function ListingDetails({ user_id }: { user_id: string }) {
               </p>
             </div>
 
+            {/* Ubicación */}
+            {(data?.city_id?.name || data?.state_id?.name) && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-2">Ubicación</h3>
+                <p className="text-gray-700">
+                  {data.city_id?.name && data.state_id?.name
+                    ? `${data.city_id.name}, ${data.state_id.name}`
+                    : data.city_id?.name || data.state_id?.name}
+                </p>
+              </div>
+            )}
+
+            {/* Atributos */}
+            {data?.attributes && data.attributes.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-2">Características</h3>
+                <div className="space-y-2">
+                  {data.attributes.map((attribute, index) => (
+                    <div key={attribute.id || index} className="flex justify-between">
+                      <span className="text-gray-600 capitalize">
+                        {attribute.name?.replace(/_/g, ' ') || 'Característica'}:
+                      </span>
+                      <span className="text-gray-900 font-medium">
+                        {attribute.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="border-t pt-4">
               <h3 className="text-lg font-semibold mb-2">
                 Información del anunciante

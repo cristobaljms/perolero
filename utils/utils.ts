@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { CATEGORIES_MAP } from "./constants";
 
 /**
  * Redirects to a specified path with an encoded message as a query parameter.
@@ -13,4 +14,10 @@ export function encodedRedirect(
   message: string,
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
+
+
+export function getCategory(category: string) {
+  const category_map = CATEGORIES_MAP.filter((c) => c.tag === category)[0];
+  return category_map ? category_map : null;
 }
