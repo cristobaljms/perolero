@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,8 +27,9 @@ import { createClient } from "@/utils/supabase/client";
 import { errorToast, successToast } from "@/lib/toast";
 import { uploadListingImages } from "@/utils/upload-images";
 import ImageUpload from "@/components/ui/image-upload";
-import { CATEGORIES } from "@/utils/constants";
 import useLocation from "../hooks/useLocation";
+import { Listing } from "@/types/listing-types";
+import { MAX_IMAGES } from "@/utils/constants";
 
 const formSchema = z.object({
   job_title: z.string({
@@ -45,23 +46,51 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function CreateListingJobForm() {
+interface EditListingJobFormProps {
+  listing: Listing;
+}
+
+export default function EditListingJobForm({
+  listing,
+}: EditListingJobFormProps) {
   const router = useRouter();
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setSelectedState, states, cities } = useLocation();
+
+  // Buscar los atributos del trabajo
+  const jobTitle = listing.attributes?.find(
+    (attr) => attr.name === "job_title"
+  );
+  const remoteAttribute = listing.attributes?.find(
+    (attr) => attr.name === "remote"
+  );
+
+  const isRemote = remoteAttribute?.value === "Remoto";
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      job_title: "",
-      price: 0,
-      city_id: "",
-      state_id: "",
-      description: "",
+      job_title: jobTitle?.value || "",
+      price: listing.price || undefined,
+      state_id: listing.state_id?.id?.toString() || "",
+      city_id: listing.city_id?.id?.toString() || "",
+      description: listing.description || "",
+      remote: isRemote,
     },
   });
+
+  useEffect(() => {
+    if (listing.state_id?.id && !isRemote) {
+      setSelectedState(Number(listing.state_id.id));
+    }
+
+    const existingImageUrls =
+      listing.images?.map((img) => img.image_url) || [];
+    setExistingImages(existingImageUrls);
+  }, [listing, isRemote]);
 
   const handleImageChange = (newImages: File[], newImageUrls: string[]) => {
     setImages(newImages);
@@ -70,14 +99,17 @@ export default function CreateListingJobForm() {
 
   const removeImage = (index: number) => {
     URL.revokeObjectURL(imageUrls[index]);
-
     setImages((prev) => prev.filter((_, i) => i !== index));
     setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const removeExistingImage = (index: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   async function onSubmit(data: FormValues) {
-    if (images.length === 0) {
-      errorToast("Debes subir al menos una imagen para tu anuncio.");
+    if (images.length === 0 && existingImages.length === 0) {
+      errorToast("Debes tener al menos una imagen para tu anuncio.");
       return;
     }
 
@@ -85,50 +117,72 @@ export default function CreateListingJobForm() {
 
     try {
       const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
 
-      const { data: listingData, error: listingError } = await supabase
+      // Actualizar el listing
+      const { error: listingError } = await supabase
         .from("listings")
-        .insert({
-          category_id: CATEGORIES.JOB,
+        .update({
           price: data.price,
           city_id: data.remote ? null : data.city_id,
           state_id: data.remote ? null : data.state_id,
           description: data.description || null,
-          user_id: user?.id,
-          currency: "USD",
           text_search: `${data.job_title} ${data.description}`,
         })
-        .select()
-        .single();
+        .eq("id", listing.id);
 
-      const { error: listingAttributesError } = await supabase
-        .from("listing_attributes")
-        .insert([
-          {
-            listing_id: listingData.id,
-            value: data.job_title,
-            name: "job_title",
-          },
-          {
-            listing_id: listingData.id,
-            value: data.remote ? "Remoto" : "Presencial",
-            name: "remote",
-          },
-        ])
-        .select();
+      if (listingError) throw listingError;
 
-      if (listingError || listingAttributesError)
-        throw listingError || listingAttributesError;
+      // Actualizar los atributos del trabajo
+      const attributesToUpdate = [
+        { name: "job_title", value: data.job_title },
+        { name: "remote", value: data.remote ? "Remoto" : "Presencial" },
+      ];
 
-      await uploadListingImages(images, listingData.id, supabase);
-      successToast("Anuncio creado");
-      router.push(`/a/${listingData.id}`);
+      for (const attr of attributesToUpdate) {
+        const { error: attributeError } = await supabase
+          .from("listing_attributes")
+          .update({
+            value: attr.value,
+          })
+          .eq("listing_id", listing.id)
+          .eq("name", attr.name);
+
+        if (attributeError) throw attributeError;
+      }
+
+      // Eliminar imágenes existentes que fueron removidas
+      const { data: currentImages } = await supabase
+        .from("listing_images")
+        .select("*")
+        .eq("listing_id", listing.id);
+
+      if (currentImages) {
+        const imagesToDelete = currentImages.filter(
+          (img: any) => !existingImages.includes(img.image_url)
+        );
+
+        for (const img of imagesToDelete) {
+          await supabase.from("listing_images").delete().eq("id", img.id);
+          // También eliminar la imagen del storage si es necesario
+          const imagePath = img.image_url.split("/").pop();
+          if (imagePath) {
+            await supabase.storage.from("listing-images").remove([imagePath]);
+          }
+        }
+      }
+
+      // Subir nuevas imágenes si las hay
+      if (images.length > 0) {
+        await uploadListingImages(images, listing.id.toString(), supabase);
+      }
+
+      successToast("Anuncio actualizado");
+      router.push(`/a/${listing.id}`);
     } catch (error) {
-      console.error("Error al crear el anuncio:", error);
-      errorToast("Hubo un problema al crear el anuncio. Inténtalo de nuevo.");
+      console.error("Error al actualizar el anuncio:", error);
+      errorToast(
+        "Hubo un problema al actualizar el anuncio. Inténtalo de nuevo."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -139,12 +193,8 @@ export default function CreateListingJobForm() {
     if (value) {
       form.setValue("state_id", "");
       form.setValue("city_id", "");
-      form.setError("state_id", {
-        message: "El estado es requerido",
-      });
-      form.setError("city_id", {
-        message: "La ciudad es requerida",
-      });
+      form.clearErrors("state_id");
+      form.clearErrors("city_id");
     }
   };
 
@@ -235,7 +285,7 @@ export default function CreateListingJobForm() {
                 <FormLabel>Estado</FormLabel>
                 <Select
                   onValueChange={(e) => handleStateChange(e)}
-                  defaultValue={field.value}
+                  value={field.value}
                   disabled={form.watch("remote")}
                 >
                   <FormControl>
@@ -256,6 +306,7 @@ export default function CreateListingJobForm() {
             )}
           />
         )}
+
         {!form.watch("remote") && (
           <FormField
             control={form.control}
@@ -265,7 +316,7 @@ export default function CreateListingJobForm() {
                 <FormLabel>Ciudad</FormLabel>
                 <Select
                   onValueChange={(e) => handleCityChange(e)}
-                  defaultValue={field.value}
+                  value={field.value}
                   disabled={form.watch("remote")}
                 >
                   <FormControl>
@@ -286,6 +337,7 @@ export default function CreateListingJobForm() {
             )}
           />
         )}
+
         <FormField
           control={form.control}
           name="description"
@@ -304,16 +356,42 @@ export default function CreateListingJobForm() {
           )}
         />
 
+        {/* Mostrar imágenes existentes */}
+        {existingImages.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Imágenes actuales</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {existingImages.map((imageUrl, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={imageUrl}
+                    alt={`Imagen ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeExistingImage(index)}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <ImageUpload
           images={images}
           imageUrls={imageUrls}
           onImageChange={handleImageChange}
           onRemoveImage={removeImage}
-          title="Imágenes del trabajo"
+          title="Agregar nuevas imágenes"
+          maxImages={MAX_IMAGES - existingImages.length}
         />
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creando anuncio..." : "Crear anuncio"}
+          {isSubmitting ? "Actualizando anuncio..." : "Actualizar anuncio"}
         </Button>
       </form>
     </Form>

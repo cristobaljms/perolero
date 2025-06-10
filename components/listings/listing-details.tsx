@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { createClient as createClientClient } from "@/utils/supabase/client";
 import { successToast, errorToast } from "@/lib/toast";
 import { getListing } from "@/services/client";
+import { ATTRIBUTES } from "@/utils/constants";
 
 export default function ListingDetails({ user_id }: { user_id: string }) {
   const [contactInfoDialogOpen, setContactInfoDialogOpen] =
@@ -250,7 +251,7 @@ export default function ListingDetails({ user_id }: { user_id: string }) {
                   {data.attributes.map((attribute, index) => (
                     <div key={attribute.id || index} className="flex justify-between">
                       <span className="text-gray-600 capitalize">
-                        {attribute.name?.replace(/_/g, ' ') || 'Característica'}:
+                        {ATTRIBUTES[attribute.name as keyof typeof ATTRIBUTES] || 'Característica'}:
                       </span>
                       <span className="text-gray-900 font-medium">
                         {attribute.value}

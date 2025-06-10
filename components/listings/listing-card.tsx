@@ -11,7 +11,7 @@ interface ListingCardProps {
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
-  console.log(" ------", listing);
+  console.log(" ------", listing) ;
   //console.log(listing.attributes);
   const isJobAndRemote = listing.category.id === CATEGORIES.JOB && listing.attributes?.find(attribute => attribute.name === "remote")?.value === "Remoto";
 

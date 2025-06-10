@@ -209,3 +209,13 @@ export const CATEGORIES_MAP = [
     tag: "servicios",
   },
 ];
+
+export const ATTRIBUTES = {
+  "property_contract_type": "contrato",
+  "vehicle_brand": "marca",
+  "vehicle_model": "modelo",
+  "vehicle_year": "año",
+  "product_title": "título",
+  "product_state": "estado",
+  "job_title": "título",
+};

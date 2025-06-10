@@ -3,7 +3,8 @@ import PropertyListings from "../components/listings/property-listing";
 import VehicleListings from "../components/listings/vehicle-listing";
 import MostPopularCategories from "@/components/most-popular-categories";
 import RecentListings from "@/components/listings/recent-listing";
-import MiddleBanner from "@/components/banners/middle-banner";
+import InContentBanner from "@/components/adsense/banners/InContentBanner";
+import { ADSENSE_CONFIG } from "@/lib/adsense-config";
 
 export default async function Home() {
   return (
@@ -11,11 +12,11 @@ export default async function Home() {
       <Header />
       <MostPopularCategories />
       <PropertyListings />
-      <MiddleBanner />
+      <InContentBanner adSlot={ADSENSE_CONFIG.adSlots.inContent1} />
       <VehicleListings /> 
-      <MiddleBanner />
+      <InContentBanner adSlot={ADSENSE_CONFIG.adSlots.inContent2} />
       <RecentListings />
-      <MiddleBanner />
+      <InContentBanner adSlot={ADSENSE_CONFIG.adSlots.inContent3} />
     </div>
   );
 }

@@ -1,8 +1,8 @@
-import TopBanner from "../banners/top-banner";
-import NextLogo from "../next-logo";
+import HeadBanner from "../adsense/banners/HeadBanner";
+import { ADSENSE_CONFIG } from "@/lib/adsense-config";
 
 export default function Header() {
   return (
-    <TopBanner /> 
+    <HeadBanner adSlot={ADSENSE_CONFIG.adSlots.header} /> 
   );
 }

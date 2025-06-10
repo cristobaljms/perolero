@@ -5,6 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import { CATEGORIES } from "@/utils/constants";
 import { getListing } from "@/services/client";
+import EditListingPropertyForm from "./edit-listing-property-form";
+import EditListingVehicleForm from "./edit-listing-vehicle-form";
+import EditListingJobForm from "./edit-listing-job-form";
+import EditListingProductForm from "./edit-listing-product-form";
 
 export default function EditListingForm({ user_id }: { user_id: string }) {
   const { listing_id } = useParams();
@@ -25,16 +29,20 @@ export default function EditListingForm({ user_id }: { user_id: string }) {
   }
 
   if (data && data.category.id === CATEGORIES.PROPERTY) {
-    return <div>EditListingPropertyForm</div>;
+    return <EditListingPropertyForm listing={data} />;
   }
 
   if (data && data.category.id === CATEGORIES.VEHICLE) {
-    return <div>EditVehicleForm</div>;
+    return <EditListingVehicleForm listing={data} />;
   }
 
   if (data && data.category.id === CATEGORIES.JOB) {
-    return <div>EditListingJobForm</div>;
+    return <EditListingJobForm listing={data} />;
   }
 
-  return <div>EditListingProductForm</div>;
+  if (data) {
+    return <EditListingProductForm listing={data} />;
+  }
+
+  return <div>No se encontró el formulario</div>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,6 +31,8 @@ import { uploadListingImages } from "@/utils/upload-images";
 import ImageUpload from "@/components/ui/image-upload";
 import { PRODUCT_STATES } from "@/utils/constants";
 import useLocation from "../hooks/useLocation";
+import { Listing } from "@/types/listing-types";
+import { MAX_IMAGES } from "@/utils/constants";
 
 const formSchema = z.object({
   product_title: z.string({
@@ -52,13 +54,21 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function EditListingProductForm() {
+interface EditListingProductFormProps {
+  listing: Listing;
+}
+
+export default function EditListingProductForm({
+  listing,
+}: EditListingProductFormProps) {
   const router = useRouter();
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { setSelectedState, states, cities } = useLocation();
 
+  console.log(listing);
   const [categoriesQuery] = useQueries({
     queries: [
       {
@@ -71,18 +81,36 @@ export default function EditListingProductForm() {
 
   const categories = categoriesQuery.data;
 
+  // Buscar los atributos del producto
+  const productTitle = listing.attributes?.find(
+    (attr) => attr.name === "product_title"
+  );
+  const productState = listing.attributes?.find(
+    (attr) => attr.name === "product_state"
+  );
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      product_title: "",
-      category_id: "",
-      price: 0,
-      product_state: "",
-      state_id: "",
-      city_id: "",
-      description: "",
+      product_title: productTitle?.value || "",
+      category_id: listing.category_id?.toString() || "",
+      price: listing.price || undefined,
+      product_state: productState?.value || "",
+      state_id: listing.state_id?.id?.toString() || "",
+      city_id: listing.city_id?.id?.toString() || "",
+      description: listing.description || "",
     },
   });
+
+  useEffect(() => {
+    if (listing.state_id?.id) {
+      setSelectedState(Number(listing.state_id.id));
+    }
+
+    const existingImageUrls =
+      listing.images?.map((img) => img.image_url) || [];
+    setExistingImages(existingImageUrls);
+  }, [listing]);
 
   const handleImageChange = (newImages: File[], newImageUrls: string[]) => {
     setImages(newImages);
@@ -91,14 +119,17 @@ export default function EditListingProductForm() {
 
   const removeImage = (index: number) => {
     URL.revokeObjectURL(imageUrls[index]);
-
     setImages((prev) => prev.filter((_, i) => i !== index));
     setImageUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const removeExistingImage = (index: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   async function onSubmit(data: FormValues) {
-    if (images.length === 0) {
-      errorToast("Debes subir al menos una imagen para tu anuncio.");
+    if (images.length === 0 && existingImages.length === 0) {
+      errorToast("Debes tener al menos una imagen para tu anuncio.");
       return;
     }
 
@@ -106,53 +137,73 @@ export default function EditListingProductForm() {
 
     try {
       const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
 
-      const { data: listingData, error: listingError } = await supabase
+      // Actualizar el listing
+      const { error: listingError } = await supabase
         .from("listings")
-        .insert({
+        .update({
           category_id: data.category_id,
           price: data.price,
           city_id: data.city_id,
           state_id: data.state_id,
           description: data.description || null,
-          user_id: user?.id,
-          currency: "USD",
           text_search: `${data.product_title} ${data.description} ${data.product_state}`,
         })
-        .select()
-        .single();
+        .eq("id", listing.id);
 
-      const { error: listingAttributesError } = await supabase
-        .from("listing_attributes")
-        .insert([
-          {
-            listing_id: listingData.id,
-            value: data.product_title,
-            name: "product_title",
-          },
-          {
-            listing_id: listingData.id,
-            value: data.product_state,
-            name: "product_state",
-          },
-        ])
-        .select();
+      if (listingError) throw listingError;
 
-      if (listingError || listingAttributesError) {
-        throw listingError || listingAttributesError;
+      // Actualizar los atributos del producto
+      const attributesToUpdate = [
+        { name: "product_title", value: data.product_title },
+        { name: "product_state", value: data.product_state },
+      ];
+
+      for (const attr of attributesToUpdate) {
+        const { error: attributeError } = await supabase
+          .from("listing_attributes")
+          .update({
+            value: attr.value,
+          })
+          .eq("listing_id", listing.id)
+          .eq("name", attr.name);
+
+        if (attributeError) throw attributeError;
       }
 
-      await uploadListingImages(images, listingData.id, supabase);
+      // Eliminar imágenes existentes que fueron removidas
+      const { data: currentImages } = await supabase
+        .from("listing_images")
+        .select("*")
+        .eq("listing_id", listing.id);
 
-      successToast("Anuncio creado");
+      if (currentImages) {
+        const imagesToDelete = currentImages.filter(
+          (img: any) => !existingImages.includes(img.image_url)
+        );
 
-      router.push(`/a/${listingData.id}`);
+        for (const img of imagesToDelete) {
+          await supabase.from("listing_images").delete().eq("id", img.id);
+          // También eliminar la imagen del storage si es necesario
+          const imagePath = img.image_url.split("/").pop();
+          if (imagePath) {
+            await supabase.storage.from("listing-images").remove([imagePath]);
+          }
+        }
+      }
+
+      // Subir nuevas imágenes si las hay
+      if (images.length > 0) {
+        await uploadListingImages(images, listing.id.toString(), supabase);
+      }
+
+      successToast("Anuncio actualizado");
+      router.push(`/a/${listing.id}`);
     } catch (error) {
-      console.error("Error al crear el anuncio:", error);
-      errorToast("Hubo un problema al crear el anuncio. Inténtalo de nuevo.");
+      console.error("Error al actualizar el anuncio:", error);
+      errorToast(
+        "Hubo un problema al actualizar el anuncio. Inténtalo de nuevo."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -170,7 +221,7 @@ export default function EditListingProductForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Categoría</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una categoría" />
@@ -237,7 +288,7 @@ export default function EditListingProductForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Estado del producto</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona un estado" />
@@ -265,10 +316,9 @@ export default function EditListingProductForm() {
               <Select
                 onValueChange={(e) => {
                   field.onChange(e);
-                  console.log(e);
                   setSelectedState(Number(e));
                 }}
-                defaultValue={field.value}
+                value={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -294,7 +344,7 @@ export default function EditListingProductForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ciudad</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecciona una ciudad" />
@@ -331,15 +381,42 @@ export default function EditListingProductForm() {
           )}
         />
 
+        {/* Mostrar imágenes existentes */}
+        {existingImages.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-medium">Imágenes actuales</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {existingImages.map((imageUrl, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={imageUrl}
+                    alt={`Imagen ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeExistingImage(index)}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <ImageUpload
           images={images}
           imageUrls={imageUrls}
           onImageChange={handleImageChange}
           onRemoveImage={removeImage}
+          title="Agregar nuevas imágenes"
+          maxImages={MAX_IMAGES - existingImages.length}
         />
 
         <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Creando anuncio..." : "Crear anuncio"}
+          {isSubmitting ? "Actualizando anuncio..." : "Actualizar anuncio"}
         </Button>
       </form>
     </Form>

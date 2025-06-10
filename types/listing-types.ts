@@ -19,6 +19,7 @@ export type Listing = {
   views: Tables<"listings">["views"];
   state: Tables<"listings">["state"];
   slug: Tables<"listings">["slug"];
+  category_id: Tables<"listings">["category_id"];
   category: {
     id: Tables<"categories">["id"];
     name: Tables<"categories">["name"];

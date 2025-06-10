@@ -6,6 +6,7 @@ import LeftBanner from "@/components/banners/left-banner";
 import QueryClientProvider from "../providers/query-client-provider";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+import AdSenseScript from "@/components/adsense/AdSenseScript";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -29,6 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
+      <head>
+        <AdSenseScript adSenseId={process.env.NEXT_PUBLIC_ADSENSE_ID || ''} />
+      </head>
       <body className="bg-gray-100 text-foreground">
         <QueryClientProvider>
           <ThemeProvider
