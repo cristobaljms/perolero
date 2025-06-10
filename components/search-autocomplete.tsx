@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -12,25 +12,48 @@ import { SEARCH_SUGGESTIONS } from "@/utils/constants"
 
 export default function SearchAutocomplete() {
   const [query, setQuery] = useState("")
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([])
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
-  // Filtrar sugerencias basadas en la consulta
+
+  // Debounce para optimizar el filtrado
   useEffect(() => {
-    if (query.trim() === "") {
-      setFilteredSuggestions([])
-      setShowSuggestions(false)
-      return
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+    
+    debounceTimerRef.current = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 150) // 150ms debounce
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [query])
+
+  // Memoizar las sugerencias filtradas
+  const filteredSuggestions = useMemo(() => {
+    if (debouncedQuery.trim() === "") {
+      return []
     }
 
-    const filtered = SEARCH_SUGGESTIONS.filter((suggestion) => suggestion.toLowerCase().includes(query.toLowerCase()))
-    setFilteredSuggestions(filtered)
-    setShowSuggestions(true)
+    const lowerQuery = debouncedQuery.toLowerCase()
+    return SEARCH_SUGGESTIONS.filter((suggestion) => 
+      suggestion.toLowerCase().includes(lowerQuery)
+    ).slice(0, 8) // Limitar a 8 resultados para mejor rendimiento
+  }, [debouncedQuery])
+
+  // Actualizar visibilidad de sugerencias
+  useEffect(() => {
+    setShowSuggestions(filteredSuggestions.length > 0 && debouncedQuery.trim() !== "")
     setActiveSuggestionIndex(-1)
-  }, [query])
+  }, [filteredSuggestions, debouncedQuery])
 
   // Cerrar sugerencias al hacer clic fuera del componente
   useEffect(() => {

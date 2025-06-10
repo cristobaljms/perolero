@@ -29,6 +29,7 @@ export const CATEGORIES = {
   JOB: 3,
 };
 
+// Usar const assertion para mejor tree-shaking y tipado
 export const SEARCH_SUGGESTIONS = [
   "Apartamento en venta",
   "Alquiler de casas",
@@ -125,7 +126,7 @@ export const SEARCH_SUGGESTIONS = [
   "Cámaras GoPro",
   "Discos de vinilo",
   "Equipos de camping",
-];
+] as const;
 
 export const CATEGORY_IDS = {
   INMUEBLES: 1,

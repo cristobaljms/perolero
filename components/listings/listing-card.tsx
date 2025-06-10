@@ -10,9 +10,8 @@ interface ListingCardProps {
   listing: Listing;
 }
 
-export function ListingCard({ listing }: ListingCardProps) {
-  console.log(" ------", listing) ;
-  //console.log(listing.attributes);
+export const ListingCard = React.memo(function ListingCard({ listing }: ListingCardProps) {
+  // Remover console.log en producción para evitar exposición de datos
   const isJobAndRemote = listing.category.id === CATEGORIES.JOB && listing.attributes?.find(attribute => attribute.name === "remote")?.value === "Remoto";
 
   return (
@@ -56,4 +55,4 @@ export function ListingCard({ listing }: ListingCardProps) {
       </Card>
     </Link>
   );
-}
+});
