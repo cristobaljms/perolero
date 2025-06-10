@@ -5,7 +5,6 @@ import { getRecentListings } from "@/services/server/listing";
 
 export default async function RecentListings() {
   const listings = await getRecentListings();
-  console.log(listings);
   return (
     <section className="mt-10 mb-5">
       <h2 className="text-xl font-semibold mb-5 flex items-center">
